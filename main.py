@@ -1,14 +1,18 @@
 import pandas as pd
 import glob
 import fpdf
-
+from pathlib import Path
 
 filepaths = glob.glob("invoices/*.xlsx")
-for file in filepaths:
-    df = pd.read_excel(file, sheet_name="Sheet 1")
+for filepath in filepaths:
+    df = pd.read_excel(filepath, sheet_name="Sheet 1")
     pdf = fpdf.FPDF(orientation='P', unit='mm', format='A4')
     pdf.add_page()
-    pdf.output(f"{file.replace('xlsx','pdf')}")
+    filename = Path(filepath).stem
+    invoice_nr = filename.split("-")[0]
+    pdf.set_font(family='Times', style='B', size=15)
+    pdf.cell(w=50, h=8, border=0, txt=f"Invoice nr.{invoice_nr}", align='L')
+    pdf.output(f"PDFs/{filename}.pdf")
 
 
 
